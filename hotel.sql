@@ -44,5 +44,6 @@ CREATE TABLE USUARIOS(
     usuario VARCHAR(100),
     contraseña VARCHAR(100),
     area VARCHAR(100),
+    tipo ENUM('normal', 'admin'),
     activo BOOLEAN DEFAULT TRUE
 )
