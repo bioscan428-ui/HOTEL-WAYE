@@ -1,42 +1,30 @@
 <?php
-// 1. Iniciar sesión solo si no ha empezado
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+session_start();
+require_once __DIR__ . '/../includes/db.php';
+
+if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
+    die("Acceso denegado");
 }
 
-// 2. Incluir conexión
-include '../includes/db.php';
-
-// 3. VALIDACIÓN DEFINITIVA
-// Usamos trim para limpiar espacios y strtolower para evitar problemas con ADMIN vs admin
-$tipo_usuario = isset($_SESSION['tipo']) ? strtolower(trim($_SESSION['tipo'])) : '';
-
-if ($tipo_usuario !== 'admin') {
-    die("Acceso denegado: Tu rango actual es [" . $tipo_usuario . "] y se requiere [admin].");
-}
-
-// 4. PROCESAR EL REGISTRO
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nombre    = $_POST['nombre'];
     $usuario   = $_POST['usuario'];
-    $password  = $_POST['contrasena']; // Texto plano
-    $area      = $_POST['area'];
-    $tipo_nuevo = $_POST['tipo']; // El rango que le daremos al nuevo usuario
+    $password  = $_POST['contrasena']; 
+    $id_area   = $_POST['id_area']; // Asegúrate de que coincida con el name del select
+    $tipo      = $_POST['tipo'];
 
-    $sql = "INSERT INTO USUARIOS (nombre, usuario, contraseña, area, tipo, activo) 
+    // Nota la "i" en el bind_param para el id_area
+    $sql = "INSERT INTO USUARIOS (nombre, usuario, contraseña, id_area, tipo, activo) 
             VALUES (?, ?, ?, ?, ?, 1)";
     
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssss", $nombre, $usuario, $password, $area, $tipo_nuevo);
+    $stmt->bind_param("sssis", $nombre, $usuario, $password, $id_area, $tipo);
 
     if ($stmt->execute()) {
-        // Éxito: Volver al formulario con mensaje
         header("Location: ../registro_empleados.php?status=success");
         exit();
     } else {
-        echo "Error al guardar: " . $conn->error;
+        die("Error en la ejecución: " . $stmt->error . " | Error de conexión: " . $conn->error);
     }
-
-    $stmt->close();
 }
 ?>

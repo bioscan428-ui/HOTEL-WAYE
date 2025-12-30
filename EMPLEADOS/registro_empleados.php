@@ -1,10 +1,11 @@
 <?php
 session_start();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-// SEGURIDAD: Si no es admin, no puede estar aquí
+// SEGURIDAD PROBADA
 if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
-    // Si no es admin, lo mandamos al dashboard o login con un mensaje
-    header('Location: login.php?error=acceso_denegado');
+    header('Location: dashboard.php?error=no_admin');
     exit();
 }
 ?>
@@ -19,7 +20,9 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
 </head>
 <body>
 
-<div class="register-card">
+<?php include __DIR__ . '/includes/header.php'; ?>
+
+<div class="register-card" style="margin-top: 100px;">
     <div class="logo-container">
         <img src="https://hotelwaye.com/wp-content/uploads/2021/10/logo-waye-white.png" alt="Logo Waye">
     </div>
@@ -28,7 +31,7 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
     <p class="subtitle">Ingresa los datos para la nueva cuenta de usuario.</p>
 
     <?php if(isset($_GET['status']) && $_GET['status'] == 'success'): ?>
-        <p style="color: green; text-align: center; font-size: 0.8rem;">¡Usuario creado correctamente!</p>
+        <p style="color: #28a745; text-align: center; font-weight: bold;">¡Usuario creado correctamente!</p>
     <?php endif; ?>
 
     <form action="controllers/registro_empleados_logica.php" method="POST">
@@ -49,13 +52,13 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
 
         <div class="form-group">
             <label for="area">Área / Departamento</label>
-            <select id="area" name="area" required>
+            <select id="area" name="id_area" required>
                 <option value="" disabled selected>Selecciona un área</option>
-                <option value="Recepción">Recepción</option>
-                <option value="Administración">Administración</option>
-                <option value="Ventas">Ventas</option>
-                <option value="Mantenimiento">Mantenimiento</option>
-                <option value="Limpieza">Limpieza</option>
+                <option value="1">Recepción</option>
+                <option value="2">Administración</option>
+                <option value="3">Ventas</option>
+                <option value="4">Mantenimiento</option>
+                <option value="5">Limpieza</option>
             </select>
         </div>
 
@@ -69,10 +72,6 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
 
         <button type="submit" class="btn-register">Crear Cuenta</button>
     </form>
-
-    <div class="footer-links">
-        <a href="login.php">¿Ya tienes cuenta? Inicia Sesión</a>
-    </div>
 </div>
 
 </body>

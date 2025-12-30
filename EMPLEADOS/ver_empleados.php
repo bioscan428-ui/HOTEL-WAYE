@@ -2,15 +2,22 @@
 session_start();
 require_once __DIR__ . '/includes/db.php';
 
-// SEGURIDAD: Solo usuarios autenticados pueden ver la lista
 if (!isset($_SESSION['usuario'])) {
     header("Location: login.php");
     exit;
 }
 
-// Consultar empleados
-$sql = "SELECT id, nombre, usuario, area, tipo, activo FROM USUARIOS ORDER BY nombre ASC";
+// CONSULTA CORREGIDA CON JOIN (Para traer el nombre del área y no el número)
+$sql = "SELECT u.id, u.nombre, u.usuario, a.nombre as area, u.tipo, u.activo 
+        FROM USUARIOS u
+        LEFT JOIN AREAS a ON u.id_area = a.id 
+        ORDER BY u.nombre ASC";
+
 $resultado = $conn->query($sql);
+
+if (!$resultado) {
+    die("Error en la consulta: " . $conn->error); // Esto te dirá el error exacto si falla
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">

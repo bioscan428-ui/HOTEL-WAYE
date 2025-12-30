@@ -38,12 +38,20 @@ CREATE TABLE RESERVA (
     FOREIGN KEY (id_usuario) REFERENCES USUARIOS(id)
 );
 
+
+CREATE TABLE AREAS(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE
+)
+
+
 CREATE TABLE USUARIOS(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nombre VARCHAR(100),
-    usuario VARCHAR(100),
-    contraseña VARCHAR(100),
-    area VARCHAR(100),
+    usuario VARCHAR(100) UNIQUE, -- Para que no se repitan nombres de acceso
+    contraseña VARCHAR(255),    -- Aumentado a 255 por seguridad (hashes)               -- Esta es la llave foránea
     tipo ENUM('normal', 'admin'),
-    activo BOOLEAN DEFAULT TRUE
-)
+    activo BOOLEAN DEFAULT TRUE,
+    id_area INT,
+    FOREIGN KEY (id_area) REFERENCES AREAS(id)
+);
