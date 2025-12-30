@@ -55,7 +55,7 @@ if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
                 <option value="Administración">Administración</option>
                 <option value="Ventas">Ventas</option>
                 <option value="Mantenimiento">Mantenimiento</option>
-                <option value="Ama de Llaves">Ama de Llaves</option>
+                <option value="Limpieza">Limpieza</option>
             </select>
         </div>
 
