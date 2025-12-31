@@ -1,13 +1,20 @@
 <?php
-session_start();
+// 1. Iniciamos sesión antes que cualquier otra cosa
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// 2. Depuración instantánea (Si te saca, verás por qué antes de irte)
+if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
+    // En lugar de redirigir a ciegas, vamos a ver qué está pasando
+    die("Error crítico: Tu sesión dice que el tipo es [" . ($_SESSION['tipo'] ?? 'VACÍO') . "]. 
+         <br> Si esto está vacío, el login no guardó tu rango. 
+         <br> <a href='logout.php'>Haz clic aquí para resetear sesión</a>");
+}
+
+// 3. Si pasó la prueba, cargamos el resto
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
-
-// SEGURIDAD PROBADA
-if (!isset($_SESSION['tipo']) || $_SESSION['tipo'] !== 'admin') {
-    header('Location: dashboard.php?error=no_admin');
-    exit();
-}
 ?>
 <!DOCTYPE html>
 <html lang="es">
